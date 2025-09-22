@@ -19,7 +19,10 @@ def downscaled_in_xyz(img, is_mask=False):
     if len(sz_orig) > 2: sz_new.append( int(sz_orig[-3] // downscale_z) )
     sz_new.append( int(sz_orig[-2] // downscale_y) )
     sz_new.append( int(sz_orig[-1] // downscale_x) )
-    return img_resize(i, sz_new, preserve_range=True, order=0) if is_mask else img_resize(i, sz_new, preserve_range=True)
+    return img_resize(img, sz_new, preserve_range=True, order=0) if is_mask else img_resize(img, sz_new, preserve_range=True)
+
+def read_and_downscale(img_filepath, is_mask=False):
+    return downscaled_in_xyz( TIFF.imread(img_filepath), is_mask=is_mask )
 
 
 def load_ctc(from_folder, tp_range_from, tp_range_till):
