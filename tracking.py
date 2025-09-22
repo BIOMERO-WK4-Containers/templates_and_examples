@@ -29,7 +29,7 @@ def load_ctc(from_folder, tp_range_from, tp_range_till):
     # load the first image to understand the shape
     fp = f"{from_folder}/t{tp_range_from:03}.tif"
     print("reading the first  raw file:",fp)
-    i = TIFF.imread(fp)
+    i = read_and_downscale(fp, is_mask=False)
 
     tp_range = tp_range_till - tp_range_from +1
     imgs = np.zeros([tp_range,*i.shape], dtype=i.dtype)
@@ -39,13 +39,13 @@ def load_ctc(from_folder, tp_range_from, tp_range_till):
 
     fp = f"{from_folder}/SEG/mask{tp_range_from:03}.tif"
     print("reading the first mask file:",fp)
-    masks[0] = TIFF.imread(fp)
+    masks[0] = read_and_downscale(fp, is_mask=True)
     imgs[0] = i
 
     for tp in range(tp_range_from+1, tp_range_till+1):
         print("reading time point:",tp)
-        imgs[tp-tp_range_from] = TIFF.imread(f"{from_folder}/t{tp_range_from:03}.tif")
-        masks[tp-tp_range_from] = TIFF.imread(f"{from_folder}/SEG/mask{tp_range_from:03}.tif")
+        imgs[tp-tp_range_from] = read_and_downscale(f"{from_folder}/t{tp_range_from:03}.tif", is_mask=False)
+        masks[tp-tp_range_from] = read_and_downscale(f"{from_folder}/SEG/mask{tp_range_from:03}.tif", is_mask=True)
 
     print("done reading.")
     return imgs,masks
