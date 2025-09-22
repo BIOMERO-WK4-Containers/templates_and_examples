@@ -35,7 +35,7 @@ def load_ctc(from_folder, tp_range_from, tp_range_till):
 # load some test data images and masks
 # imgs, masks = example_data_bacteria()
 
-imgs, masks = load_ctc('/home/ulman/papers/mastodonPaper/E1_cellposev4_trackatra/',5,7)
+imgs, masks = load_ctc('/mnt/proj2/dd-24-22/Mastodon_paper/orig_as_CTC__own_SEG_TRA/',0,600)
 
 # Load a pretrained model
 #model = Trackastra.from_pretrained("general_2d", device=device)
