@@ -17,6 +17,7 @@ def load_ctc(from_folder, tp_range_from, tp_range_till):
     imgs = np.zeros([tp_range,*i.shape], dtype=i.dtype)
     masks = np.zeros([tp_range,*i.shape], dtype='uint16')
     print("allocated memory for twice the shapes: ",imgs.shape)
+    print("...this is likely as much as ",len(imgs.flat)*4.0 / float(1 << 30),"GB")
 
     fp = f"{from_folder}/SEG/mask{tp_range_from:03}.tif"
     print("reading the first mask file:",fp)
