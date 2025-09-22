@@ -4,8 +4,23 @@ from trackastra.model import Trackastra
 from trackastra.tracking import graph_to_ctc, graph_to_napari_tracks
 from trackastra.data import example_data_bacteria
 import tifffile as TIFF
+from skimage.transform import resize as img_resize
 
 device = "automatic" # explicit choices: [cuda, mps, cpu]
+
+
+downscale_x = 4.0
+downscale_y = 4.0
+downscale_z = 1.0
+
+def downscaled_in_xyz(img, is_mask=False):
+    sz_new = []
+    sz_orig = img.shape
+    if len(sz_orig) > 2: sz_new.append( int(sz_orig[-3] // downscale_z) )
+    sz_new.append( int(sz_orig[-2] // downscale_y) )
+    sz_new.append( int(sz_orig[-1] // downscale_x) )
+    return img_resize(i, sz_new, preserve_range=True, order=0) if is_mask else img_resize(i, sz_new, preserve_range=True)
+
 
 def load_ctc(from_folder, tp_range_from, tp_range_till):
     # load the first image to understand the shape
