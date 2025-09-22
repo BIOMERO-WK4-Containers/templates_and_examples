@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 from trackastra.model import Trackastra
 from trackastra.tracking import graph_to_ctc, graph_to_napari_tracks
 from trackastra.data import example_data_bacteria
@@ -6,8 +7,35 @@ import tifffile as TIFF
 
 device = "automatic" # explicit choices: [cuda, mps, cpu]
 
+def load_ctc(from_folder, tp_range_from, tp_range_till):
+    # load the first image to understand the shape
+    fp = f"{from_folder}/t{tp_range_from:03}.tif"
+    print("reading the first  raw file:",fp)
+    i = TIFF.imread(fp)
+
+    tp_range = tp_range_till - tp_range_from +1
+    imgs = np.zeros([tp_range,*i.shape], dtype=i.dtype)
+    masks = np.zeros([tp_range,*i.shape], dtype='uint16')
+    print("allocated memory for twice the shapes: ",imgs.shape)
+
+    fp = f"{from_folder}/SEG/mask{tp_range_from:03}.tif"
+    print("reading the first mask file:",fp)
+    masks[0] = TIFF.imread(fp)
+    imgs[0] = i
+
+    for tp in range(tp_range_from+1, tp_range_till+1):
+        print("reading time point:",tp)
+        imgs[tp-tp_range_from] = TIFF.imread(f"{from_folder}/t{tp_range_from:03}.tif")
+        masks[tp-tp_range_from] = TIFF.imread(f"{from_folder}/SEG/mask{tp_range_from:03}.tif")
+
+    print("done reading.")
+    return imgs,masks
+
+
 # load some test data images and masks
-imgs, masks = example_data_bacteria()
+# imgs, masks = example_data_bacteria()
+
+imgs, masks = load_ctc('/home/ulman/papers/mastodonPaper/E1_cellposev4_trackatra/',5,7)
 
 # Load a pretrained model
 #model = Trackastra.from_pretrained("general_2d", device=device)
