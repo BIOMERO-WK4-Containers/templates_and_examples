@@ -43,14 +43,23 @@ imgs, masks = load_ctc('/home/ulman/papers/mastodonPaper/E1_cellposev4_trackatra
 # the 'ctc' model handles also 2d tracking
 model = Trackastra.from_pretrained('ctc', device=device)
 
+print("starting the tracking...")
+
 # Track the cells
 track_graph = model.track(imgs, masks, mode="greedy")  # or mode="ilp", or "greedy_nodiv"
+
+print("done tracking.")
 
 # Write to cell tracking challenge format
 ctc_tracks, masks_tracked = graph_to_ctc(track_graph, masks, outdir=".")
 
+print("done exporting (1st pass)")
+
 # hmm, but it is written with "ZSTD compression".... a bit of problem
 # soo, resave again:
 for t in range(masks_tracked.shape[0]):
+    print("re-saving time point:",t)
     TIFF.imwrite(f"man_track{t:04}.tif", masks_tracked[t])
+
+print("done exporting (2nd pass)")
 
