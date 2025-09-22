@@ -2,4 +2,6 @@
 pixi.lock
 __pycache__
 
+logs
+
 .*.sw*
