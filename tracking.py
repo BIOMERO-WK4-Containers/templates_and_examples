@@ -10,8 +10,8 @@ import util.parallelism_paradigms as P
 device = "automatic" # explicit choices: [cuda, mps, cpu]
 
 
-downscale_x = 4.0
-downscale_y = 4.0
+downscale_x = 3.0
+downscale_y = 3.0
 downscale_z = 1.0
 
 orig_shape = None
