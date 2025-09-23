@@ -16,6 +16,7 @@ downscale_z = 1.0
 orig_shape = None
 
 def downscaled_in_xyz(img, is_mask=False):
+    global orig_shape
     sz_new = []
     sz_orig = img.shape
     orig_shape = [ sz for sz in sz_orig ] # backup (make a copy) the original size, assuming all input images are of the same size
@@ -25,8 +26,16 @@ def downscaled_in_xyz(img, is_mask=False):
     sz_new.append( int(sz_orig[-1] // downscale_x) )
     return img_resize(img, sz_new, preserve_range=True, order=0) if is_mask else img_resize(img, sz_new, preserve_range=True)
 
+def upscaled_in_xyz(img, is_mask=False):
+    global orig_shape
+    if orig_shape is None: return img
+    return img_resize(img, orig_shape, preserve_range=True, order=0) if is_mask else img_resize(img, orig_shape, preserve_range=True)
+
 def read_and_downscale(img_filepath, is_mask=False):
     return downscaled_in_xyz( TIFF.imread(img_filepath), is_mask=is_mask )
+
+def write_upscaled(img_filepath, img, is_mask=False):
+    TIFF.imwrite( img_filepath, upscaled_in_xyz(img, is_mask=is_mask) )
 
 
 def load_ctc(from_folder, tp_range_from, tp_range_till):
@@ -82,7 +91,7 @@ print("done exporting (1st pass)")
 # soo, resave again:
 for t in range(masks_tracked.shape[0]):
     print("re-saving time point:",t)
-    TIFF.imwrite(f"man_track{t:04}.tif", masks_tracked[t])
+    write_upscaled(f"man_track{t:03}.tif", masks_tracked[t], is_mask=True)
 
 print("done exporting (2nd pass)")
 
