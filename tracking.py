@@ -16,6 +16,19 @@ downscale_z = 1.0
 
 orig_shape = None
 
+# TODO: after down-scaling, check that
+#         - no mask disappeared; if it did disappeared, place 1x1 px at least
+#         - no mask has been split into multiple components (or(?), to different number of components than it was originally)
+
+# TODO: instead of up-scaling back, relabel the original masks (reload them from the drive)
+# TODO: after up-scaling/projecting back, check no label has been left untouched (consistency)
+
+# TODO: towards automation:
+#         - use ~1.0x number of CPUs for the multithreading
+#         - put everything into functions, perhaps turn the whole thing into a class?
+#         - consider using TQDM in util/parallelism_paradigms (and not print() in processing functions)
+#         - for segmentation: use SLURM env variables (with defaults if no env var is found) for splitting the work
+
 def downscaled_in_xyz(img, is_mask=False):
     global orig_shape
     sz_new = []
