@@ -13,9 +13,13 @@ downscale_x = 4.0
 downscale_y = 4.0
 downscale_z = 1.0
 
+orig_shape = None
+
 def downscaled_in_xyz(img, is_mask=False):
     sz_new = []
     sz_orig = img.shape
+    orig_shape = [ sz for sz in sz_orig ] # backup (make a copy) the original size, assuming all input images are of the same size
+
     if len(sz_orig) > 2: sz_new.append( int(sz_orig[-3] // downscale_z) )
     sz_new.append( int(sz_orig[-2] // downscale_y) )
     sz_new.append( int(sz_orig[-1] // downscale_x) )
