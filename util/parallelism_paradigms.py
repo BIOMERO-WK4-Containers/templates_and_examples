@@ -12,10 +12,10 @@ logging.basicConfig(
 )
 
 
-def get_optimal_thread_count(multiplier = 1.0):
+def get_workers_count(multiplier = 1.0):
     """
-    Get optimal thread count for I/O-bound tasks.
-    If CPU count fails to be determined, fallback values is 4.
+    Get the number of CPU cores available.
+    If CPU count fails to be determined, fallback value is 4.
 
     Note for threading vs multiprocessing:
     - Threading: For I/O-bound tasks (file reading), you can often use 2-4x more threads
@@ -48,11 +48,11 @@ def example_process_item(input: Any) -> Any:
     return "resolved"
 
 
-def process_multithreaded(inputs: List[Any],
-                          process_fun,
-                          num_threads: int,
-                          thread_names: str = 'pyProcessors',
-                          timeout: Optional[float] = None) -> List[Any]:
+def process_with_multithreading(inputs: List[Any],
+                                process_fun,
+                                num_threads: int,
+                                thread_names: str = 'pyProcessors',
+                                timeout: Optional[float] = None) -> List[Any]:
     """
     Process 'inputs' items, each item consumed with 'process_fun()', using a
     thread pool of size 'num_threads', but wait no longer than 'timeout' seconds.
@@ -64,7 +64,7 @@ def process_multithreaded(inputs: List[Any],
     """
     outputs = [ None for _ in range(len(inputs)) ]
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads, 
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads,
                                                thread_name_prefix=thread_names) as executor:
 
         # Submit all tasks to the executor, noting done to where outputs shall belong
@@ -92,21 +92,21 @@ def process_multithreaded(inputs: List[Any],
 def example():
     files_to_process = [
         "file1.txt",
-        "file2.txt", 
+        "file2.txt",
         "file3.txt",
         "data/file4.txt",
         "logs/file5.txt"
     ]
 
     def file_processor(fn:str):
-        logging.info(f"active thread {threading.current_thread().name} working on:  {fn}")
+        logging.info(f"active thread {threading.current_thread().name} on process {os.getpid()} working on:  {input}")
         return 'seen '+fn
 
     # Number of worker threads
-    NUM_THREADS = get_optimal_thread_count(0.8)
+    NUM_THREADS = get_workers_count(0.8)
     NUM_THREADS = 3
 
-    outputs = process_multithreaded(files_to_process, file_processor, NUM_THREADS, timeout=3)
+    outputs = process_with_multithreading(files_to_process, file_processor, NUM_THREADS, timeout=3)
     for o in outputs: print("status:",o)
 
 
