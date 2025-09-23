@@ -126,9 +126,17 @@ print("done exporting (1st pass)")
 
 # hmm, but it is written with "ZSTD compression".... a bit of problem
 # soo, resave again:
-for t in range(masks_tracked.shape[0]):
+print("will also re-shape to",orig_shape)
+def rewriter(t):
     print("re-saving time point:",t)
-    write_upscaled(f"man_track{t:03}.tif", masks_tracked[t], is_mask=True)
+    write_upscaled(f"man_track{t:04}.tif", masks_tracked[t], is_mask=True)
+#
+# serial
+# for t in range(masks_tracked.shape[0]): rewriter(t)
+#
+# parallel
+tasks = [ t for t in range(masks_tracked.shape[0]) ]
+P.process_with_multithreading(tasks, rewriter, NUM_PARALLEL_WORKERS, "ctc_writer")
 
 print("done exporting (2nd pass)")
 
