@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 #SBATCH -A FTA-25-62
-#SBATCH -o /mnt/proj2/dd-24-22/Mastodon_paper/code/seg_and_tra_pipeline/logs/job-%x-%A_%a-%N.out.txt
-#SBATCH -e /mnt/proj2/dd-24-22/Mastodon_paper/code/seg_and_tra_pipeline/logs/job-%x-%A_%a-%N.err.txt
+#SBATCH -o /mnt/proj2/dd-24-22/Mastodon_paper/code/seg_and_tra_pipeline/SLURM/logs/job-%x-%A_%a-%N.out.txt
+#SBATCH -e /mnt/proj2/dd-24-22/Mastodon_paper/code/seg_and_tra_pipeline/SLURM/logs/job-%x-%A_%a-%N.err.txt
 
 #SBATCH -J "cellpose v4 3D"
 #SBATCH -p qgpu
