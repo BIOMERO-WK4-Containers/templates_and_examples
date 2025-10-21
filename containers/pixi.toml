@@ -8,4 +8,9 @@ version = "0.1.0"
 [tasks]
 
 [dependencies]
-easybuild = ">=3.9.3,<4"
+#easybuild = ">=3.9.3,<4"
+#lmod = ">=8.7.25,<9"
+python = ">3.6"
+pip = ">=25.2,<26"
+lmod = ">=8.7.25,<9"
+libibverbs-devel-cos6-x86_64 = ">=1.1.8,<2"
