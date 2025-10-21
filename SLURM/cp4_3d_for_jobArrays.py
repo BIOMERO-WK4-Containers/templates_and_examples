@@ -14,7 +14,7 @@ worker_index = int(os.environ.get('SLURM_ARRAY_TASK_ID',1))
 worker_total = int(os.environ.get('SLURM_ARRAY_TASK_COUNT',1))
 #
 # IMPORTANT: Run this worker script within SLURM's Job Arrays paradigm
-# example: sbatch -J1-6 0_slurmFacade_startHere.sh
+# example: sbatch --array=1-6 0_slurmFacade_startHere.sh
 # (it's better here to index sub-jobs 1-based, not 0-based, then _ID = 1..6, _COUNT=6)
 #
 # However(!), by injecting the two above variables intol a local environment (OS),
