@@ -20,3 +20,10 @@
 
 cd /mnt/proj2/dd-24-22/Mastodon_paper/code/seg_and_tra_pipeline/
 pixi run --frozen python /mnt/proj2/dd-24-22/Mastodon_paper/code/seg_and_tra_pipeline/SLURM/cp4_3d_for_jobArrays.py
+
+# local ../pixi.toml supports four configurations of python environments:
+# pixi run -e cpu-v3 COMMAND WITH_ARGS
+# pixi run -e gpu-v3 COMMAND WITH_ARGS
+# pixi run -e cpu-v4 COMMAND WITH_ARGS
+#     pixi run (no param) COMMAND WITH_ARGS
+#  or pixi run -e default COMMAND WITH_ARGS -- both represent gpu-v4

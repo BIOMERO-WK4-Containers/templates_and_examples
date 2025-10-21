@@ -26,7 +26,15 @@ worker_total = int(os.environ.get('SLURM_ARRAY_TASK_COUNT',1))
 # this script will sequentially execute the whole workload...
 
 def get_list_of_indices_for_this_worker(worker_id, number_of_all_workers_avaible, all_jobs_list):
-    """ Assuming number_of_all_workers_avaible >= 1 and worker_id in [1, number_of_all_workers_avaible] """
+    """
+    Assuming 'number_of_all_workers_avaible' >= 1 and 'worker_id' in [1, number_of_all_workers_avaible]
+
+    Returns:
+        - A relevant sublist from 'all_jobs_list',
+        - Or an empty list of error (e.g. when 'worker_id' is out of bounds)
+    """
+
+    if worker_id < 1 or worker_id > number_of_all_workers_avaible: return []
 
     per_job_count = len(all_jobs_list) // number_of_all_workers_avaible
 
