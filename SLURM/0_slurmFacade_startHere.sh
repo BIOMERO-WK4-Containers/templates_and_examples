@@ -15,4 +15,4 @@
 #SBATCH -t 5:00:0
 
 cd /mnt/proj2/dd-24-22/Mastodon_paper/code/seg_and_tra_pipeline/
-pixi run --frozen python /mnt/proj2/dd-24-22/Mastodon_paper/code/seg_and_tra_pipeline/cp4_3d_part${1}.py
+pixi run --frozen python /mnt/proj2/dd-24-22/Mastodon_paper/code/seg_and_tra_pipeline/SLURM/cp4_3d_for_jobArrays.py
