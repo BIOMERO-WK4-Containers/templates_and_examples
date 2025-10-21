@@ -1,0 +1,210 @@
+easyblock = 'Tarball'
+
+name = 'PyTorchContainerBuilder'
+version = '1.0'
+
+homepage = 'https://pytorch.org'
+description = """
+Container builder for PyTorch image processing applications.
+Generates Docker and Singularity containers from Python scripts.
+"""
+
+#toolchain = {'name': 'system', 'version': ''}
+toolchain = {'name': 'foss', 'version': '2023a'}
+
+# Create a dummy source tarball on the fly
+sources = ['%(name)s-%(version)s.tar.gz']
+
+# This will be empty, we just use postinstallcmds to create everything
+builddependencies = []
+
+# Container generation configuration
+postinstallcmds = [
+    # Create container templates directory
+    'mkdir -p %(installdir)s/bin',
+    'mkdir -p %(installdir)s/templates',
+    
+    # Create requirements.txt template
+    'cat > %(installdir)s/templates/requirements.txt << "EOF"',
+    'torch==2.1.2',
+    'torchvision',
+    'scikit-image==0.22.0',
+    'tifffile==2023.9.26',
+    'numpy',
+    'scipy',
+    'pillow',
+    'imageio',
+    'EOF',
+    
+    # Create flexible Dockerfile template
+    'cat > %(installdir)s/templates/Dockerfile.template << "EOF"',
+    'FROM python:3.11-slim',
+    'LABEL maintainer="EasyBuild Generated"',
+    'LABEL version="1.0"',
+    'RUN apt-get update && apt-get install -y \\',
+    '    build-essential \\',
+    '    git \\',
+    '    && rm -rf /var/lib/apt/lists/*',
+    'WORKDIR /app',
+    'COPY requirements.txt .',
+    'RUN pip install --no-cache-dir --upgrade pip && \\',
+    '    pip install --no-cache-dir -r requirements.txt',
+    'COPY {{SCRIPT_NAME}} .',
+    'RUN chmod +x {{SCRIPT_NAME}}',
+    'ENTRYPOINT ["python", "{{SCRIPT_NAME}}"]',
+    'EOF',
+    
+    # Create Singularity definition template
+    'cat > %(installdir)s/templates/singularity.def.template << "EOF"',
+    'Bootstrap: docker',
+    'From: python:3.11-slim',
+    '%%files',
+    '    requirements.txt /app/requirements.txt',
+    '    {{SCRIPT_NAME}} /app/{{SCRIPT_NAME}}',
+    '%%post',
+    '    apt-get update && apt-get install -y \\',
+    '        build-essential \\',
+    '        git \\',
+    '        && rm -rf /var/lib/apt/lists/*',
+    '    cd /app',
+    '    pip install --no-cache-dir --upgrade pip',
+    '    pip install --no-cache-dir -r requirements.txt',
+    '%%environment',
+    '    export LC_ALL=C',
+    '    export PATH="/app:$PATH"',
+    '%%runscript',
+    '    cd /app',
+    '    exec python {{SCRIPT_NAME}} "$@"',
+    '%%labels',
+    '    Author EasyBuild',
+    '    Version 1.0',
+    '    Description PyTorch image processing container',
+    '%%help',
+    '    This container provides a PyTorch environment for image processing.',
+    '    Usage: singularity run {{CONTAINER_NAME}}.sif [arguments]',
+    'EOF',
+    
+    # Create universal container builder script
+    'cat > %(installdir)s/bin/build_containers.py << "EOF"',
+    '#!/usr/bin/env python3',
+    'import os',
+    'import sys',
+    'import shutil',
+    'import subprocess',
+    'import argparse',
+    'from pathlib import Path',
+    '',
+    'def main():',
+    '    parser = argparse.ArgumentParser(description="Build Docker and Singularity containers")',
+    '    parser.add_argument("script", help="Python script to containerize")',
+    '    parser.add_argument("--docker-only", action="store_true", help="Build only Docker image")',
+    '    parser.add_argument("--singularity-only", action="store_true", help="Build only Singularity image")',
+    '    parser.add_argument("--tag", help="Container tag/name (default: script basename)")',
+    '    parser.add_argument("--keep-build-dir", action="store_true", help="Keep build directory after completion")',
+    '    args = parser.parse_args()',
+    '    ',
+    '    script_path = Path(args.script).resolve()',
+    '    if not script_path.exists():',
+    '        print(f"Error: Script {script_path} not found")',
+    '        sys.exit(1)',
+    '    ',
+    '    script_name = script_path.name',
+    '    base_name = args.tag or script_path.stem',
+    '    ',
+    '    # Find template directory',
+    '    template_dir = Path(os.environ.get("PYTORCH_CONTAINER_TEMPLATES", "%(installdir)s/templates"))',
+    '    if not template_dir.exists():',
+    '        print(f"Error: Template directory {template_dir} not found")',
+    '        sys.exit(1)',
+    '    ',
+    '    # Create build directory',
+    '    build_dir = Path(f"build_{base_name}")',
+    '    if build_dir.exists():',
+    '        print(f"Warning: Build directory {build_dir} already exists. Removing...")',
+    '        shutil.rmtree(build_dir)',
+    '    build_dir.mkdir()',
+    '    original_dir = Path.cwd()',
+    '    os.chdir(build_dir)',
+    '    ',
+    '    try:',
+    '        # Copy files',
+    '        shutil.copy(script_path, script_name)',
+    '        shutil.copy(template_dir / "requirements.txt", ".")',
+    '        ',
+    '        # Generate Dockerfile',
+    '        with open(template_dir / "Dockerfile.template") as f:',
+    '            dockerfile_content = f.read().replace("{{SCRIPT_NAME}}", script_name)',
+    '        with open("Dockerfile", "w") as f:',
+    '            f.write(dockerfile_content)',
+    '        ',
+    '        # Generate Singularity definition',
+    '        with open(template_dir / "singularity.def.template") as f:',
+    '            singularity_content = f.read().replace("{{SCRIPT_NAME}}", script_name).replace("{{CONTAINER_NAME}}", base_name)',
+    '        with open(f"{base_name}.def", "w") as f:',
+    '            f.write(singularity_content)',
+    '        ',
+    '        # Build containers',
+    '        if not args.singularity_only:',
+    '            print(f"Building Docker image {base_name}:latest...")',
+    '            subprocess.run(["docker", "build", "-t", f"{base_name}:latest", "."], check=True)',
+    '            print(f"Docker image built successfully: {base_name}:latest")',
+    '        ',
+    '        if not args.docker_only:',
+    '            print(f"Building Singularity image {base_name}.sif...")',
+    '            subprocess.run(["singularity", "build", "--fakeroot", f"{base_name}.sif", f"{base_name}.def"], check=True)',
+    '            print(f"Singularity image built successfully: {base_name}.sif")',
+    '            ',
+    '            # Move SIF file to parent directory',
+    '            shutil.move(f"{base_name}.sif", original_dir / f"{base_name}.sif")',
+    '        ',
+    '        print("\\nBuild complete!")',
+    '        print(f"\\nUsage examples:")',
+    '        if not args.singularity_only:',
+    '            print(f"  Docker:      docker run --rm -v $(pwd):/data {base_name}:latest")',
+    '        if not args.docker_only:',
+    '            print(f"  Singularity: singularity run --bind $(pwd):/data {base_name}.sif")',
+    '    ',
+    '    finally:',
+    '        os.chdir(original_dir)',
+    '        if not args.keep_build_dir:',
+    '            shutil.rmtree(build_dir)',
+    '            print(f"\\nCleaned up build directory")',
+    '        else:',
+    '            print(f"\\nBuild files available in: {build_dir}")',
+    '    ',
+    'if __name__ == "__main__":',
+    '    main()',
+    'EOF',
+    
+    'chmod +x %(installdir)s/bin/build_containers.py',
+]
+
+# Since Tarball needs a source, create a dummy one
+prebuildopts = 'mkdir -p %(name)s-%(version)s && tar czf %(name)s-%(version)s.tar.gz %(name)s-%(version)s && '
+
+modextrapaths = {
+    'PATH': 'bin',
+}
+
+modextravars = {
+    'PYTORCH_CONTAINER_TEMPLATES': '%(installdir)s/templates',
+}
+
+modluafooter = """
+help([[
+This module provides container generation tools for PyTorch image processing applications.
+
+Available tools:
+- build_containers.py: Generate Docker and Singularity containers from Python scripts
+
+Usage examples:
+  build_containers.py my_script.py
+  build_containers.py my_script.py --docker-only --tag my_analysis
+  build_containers.py my_script.py --singularity-only
+
+Environment variables:
+- PYTORCH_CONTAINER_TEMPLATES: Path to container templates
+]])
+"""
+
+moduleclass = 'tools'

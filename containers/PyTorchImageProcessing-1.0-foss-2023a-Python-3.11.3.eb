@@ -6,7 +6,7 @@ versionsuffix = '-Python-%(pyver)s'
 
 homepage = 'https://pytorch.org'
 description = """
-Container-ready PyTorch image processing environment with scikit-image and tifffile.
+Container-ready PyTorch image processing environment with tifffile.
 Includes Docker and Singularity generation capabilities.
 """
 
@@ -22,14 +22,7 @@ dependencies = [
 
 use_pip = True
 
-exts_list = [
-    ('scikit-image', '0.22.0', {
-        'checksums': ['018d734df1d2da2719087d15f679d19285fce97cd37695103deadfaef2873236'],
-    }),
-    ('tifffile', '2023.9.26', {
-        'checksums': ['7a3539b2d11c72dc3fdf5c849ce1c6bfe7bb94b28d3b7e1bc42e4f88b0c3e1e91'],
-    }),
-]
+exts_list = []
 
 # Container generation configuration
 postinstallcmds = [
@@ -38,14 +31,9 @@ postinstallcmds = [
     
     # Create requirements.txt from installed packages
     'cat > %(installdir)s/container_templates/requirements.txt << EOF\n'
-    'torch==2.1.2\n'
+    'torch\n'
     'torchvision\n'
-    'scikit-image==0.22.0\n'
-    'tifffile==2023.9.26\n'
-    'numpy\n'
-    'scipy\n'
-    'pillow\n'
-    'imageio\n'
+    'tifffile\n'
     'EOF\n',
     
     # Create flexible Dockerfile template
