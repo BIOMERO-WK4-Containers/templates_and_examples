@@ -7,16 +7,16 @@ import numpy as np
 
 def main(image_path: str = '/temp/input.tif'):
     print(f"Reading TIFF image from: {image_path}")
-    
+
     # Read the TIFF file
     image = tifffile.imread(image_path)
-    
+
     print(f"Image shape: {image.shape}")
     print(f"Image dtype: {image.dtype}")
     print(f"Image min value: {np.min(image)}")
     print(f"Image max value: {np.max(image)}")
     print(f"Image mean value: {np.mean(image):.2f}")
-    
+
     # Do some simple processing
     if len(image.shape) == 2:
         # Grayscale image
@@ -33,7 +33,7 @@ def main(image_path: str = '/temp/input.tif'):
         else:
             # Multi-page or z-stack
             print(f"\nThis is a multi-page/z-stack image with {image.shape[0]} slices")
-    
+
     # Write some output
     output_path = "/temp/output.txt"
     with open(output_path, 'w') as f:
@@ -45,9 +45,10 @@ def main(image_path: str = '/temp/input.tif'):
         f.write(f"Min: {np.min(image)}\n")
         f.write(f"Max: {np.max(image)}\n")
         f.write(f"Mean: {np.mean(image):.2f}\n")
-    
+
     print(f"\nResults written to: {output_path}")
     print("Processing complete!")
+
 
 if __name__ == "__main__":
     import sys
