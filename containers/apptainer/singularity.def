@@ -9,21 +9,23 @@ From: python:3.11-slim
     apt-get update
     apt-get install -y --no-install-recommends
     rm -rf /var/lib/apt/lists/*
-    
+
     # Install Python packages
     pip install --no-cache-dir \
         tifffile \
         numpy
-    
+
     # Make script executable
-    chmod +x /app/example_tiff_processor.py
-    
+	 # Vlado: not necessary
+    # chmod +x /app/example_tiff_processor.py
+
     # Create data directory
     mkdir -p /data
 
 %environment
     export LC_ALL=C
-    export PATH="/app:$PATH"
+	 # Vlado: not necessary
+    # export PATH="/app:$PATH"
 
 %runscript
     cd /app
@@ -36,9 +38,9 @@ From: python:3.11-slim
 
 %help
     This container processes TIFF images using the tifffile library.
-    
+
     Usage:
         singularity run --bind /path/to/your/data:/data tiff_processor.sif
-    
+
     The script expects to find a TIFF image at /data/input.tif
     and will write results to /data/output.txt
