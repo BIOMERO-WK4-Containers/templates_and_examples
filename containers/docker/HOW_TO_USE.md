@@ -30,7 +30,6 @@ and removes the container afterwards (this is due to the `--rm` parameter). Btw,
 the existing containers (live running as well as finished ones) can be listed with
 `sudo docker container ls -a`.
 
-
 Following up the example above
 
 `sudo docker run --rm tiff:latest /temp/input.tif`
@@ -39,4 +38,6 @@ and again with mapping a real `/temp` folder into a "virtual"
 Docker folder `/tempX`; notice the parameter follows the "virtual" path
 
 `sudo docker run --rm -v/temp:/tempX  tiff2:latest  /tempX/input2.tif`
+
+Any command-line arguments will be passed to the containerized workhorse script.
 
