@@ -41,3 +41,36 @@ Docker folder `/tempX`; notice the parameter follows the "virtual" path
 
 Any command-line arguments will be passed to the containerized workhorse script.
 
+
+# Interactive Mode
+
+```bash
+# Start an interactive shell in the container
+docker run --rm -it \
+    -v $(pwd)/test_data:/data \
+    --entrypoint /bin/bash \
+    tiff-processor:latest
+
+# Inside the container, you can run the script manually:
+python example_tiff_processor.py
+```
+
+# Troubleshooting
+
+If you encounter permission issues with Docker:
+
+```bash
+# Run with user permissions
+docker run --rm \
+    -v $(pwd)/test_data:/data \
+    -u $(id -u):$(id -g) \
+    tiff-processor:latest
+```
+
+### Checking Container Contents
+
+```bash
+# Docker: list files in container
+docker run --rm tiff-processor:latest ls -la /app
+```
+

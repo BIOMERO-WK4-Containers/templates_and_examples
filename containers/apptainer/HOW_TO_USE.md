@@ -27,3 +27,35 @@ evaluated within the container, and can be made to overlay a real path:
 
 `apptainer run --bind /temp:/tempQW sandbox.sif /tempQW/input.tif`
 
+
+# Interactive Mode
+
+```bash
+# Start an interactive shell in the container
+apptainer shell \
+    --bind $(pwd)/test_data:/data \
+    tiff_processor.sif
+
+# Inside the container, you can run the script manually:
+python /app/example_tiff_processor.py
+```
+
+# Troubleshooting
+
+If fakeroot doesn't work:
+
+```bash
+# Use remote build (requires network)
+apptainer build --remote tiff_processor.sif tiff_processor.def
+
+# Or use sudo
+sudo singularity build tiff_processor.sif tiff_processor.def
+```
+
+### Checking Container Contents
+
+```bash
+# Apptainer: inspect the container
+apptainer inspect tiff_processor.sif
+```
+
