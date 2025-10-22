@@ -1,0 +1,32 @@
+# Use Python 3.11 slim image as base
+FROM python:3.11-slim
+
+# Set metadata
+LABEL maintainer="vladimir.ulman@vsb.cz"
+LABEL description="TIFF image processor using tifffile"
+LABEL version="1.0"
+
+# Install system dependencies if needed
+RUN apt-get update && apt-get install -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Install Python dependencies
+RUN pip install --no-cache-dir \
+    tifffile \
+    numpy
+
+# Copy the Python script into the container
+# (Could have stayed outside but the purpose of
+#  wrapping a code into a contained would be void.)
+COPY example_tiff_processor.py .
+
+# Create data directory for mounting
+# This is not necessary when '-v' param is used with docker as this param
+# can bind a real(host)-folder to a docker-folder here that's not existing
+## RUN mkdir -p /data
+
+# Set the entrypoint to run the Python script
+ENTRYPOINT ["python", "example_tiff_processor.py"]

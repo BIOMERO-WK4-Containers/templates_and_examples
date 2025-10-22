@@ -1,0 +1,46 @@
+Bootstrap: docker
+From: python:3.11-slim
+
+%files
+    example_tiff_processor.py /app/example_tiff_processor.py
+
+%post
+    # Update and install any system dependencies if needed
+    apt-get update
+    apt-get install -y --no-install-recommends
+    rm -rf /var/lib/apt/lists/*
+
+    # Install Python packages
+    pip install --no-cache-dir \
+        tifffile \
+        numpy
+
+    # Make script executable
+	 # Vlado: not necessary
+    # chmod +x /app/example_tiff_processor.py
+
+    # Create data directory
+    mkdir -p /data
+
+%environment
+    export LC_ALL=C
+	 # Vlado: not necessary
+    # export PATH="/app:$PATH"
+
+%runscript
+    cd /app
+    exec python example_tiff_processor.py "$@"
+
+%labels
+    Author Vladimir Ulman <vladimir.ulman@vsb.cz>
+    Version 1.0
+    Description TIFF image processor using tifffile
+
+%help
+    This container processes TIFF images using the tifffile library.
+
+    Usage:
+        singularity run --bind /path/to/your/data:/data tiff_processor.sif
+
+    The script expects to find a TIFF image at /data/input.tif
+    and will write results to /data/output.txt
