@@ -44,6 +44,7 @@ the `util/parallelism_paradigms.py`.
 - Tracking
   - CellTrackingChallenge.NUDT-CN, transformer-based tracker?
   - U-LSTM as CellTrackingChallenge.BHU-IL
+  - [CELLECT](https://www.nature.com/articles/s41592-025-02886-x) (3D!)
 
 - Segmentation and Tracking in one go
   - TGMM, old-school but still very performant, CPU-only
