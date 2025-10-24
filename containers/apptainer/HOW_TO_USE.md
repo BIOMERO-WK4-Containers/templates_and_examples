@@ -32,7 +32,7 @@ evaluated within the container, and can be made to overlay a real path:
 
 Alternatively, you can also run your container as a slurm job: `sbatch apptainer_run.slurm`
 
-***Nota bene: you need to check if you need to mount the [folders](SLURM/apptainer_run_tier2k.slurm) or the folders are already [mounted](SLURM/apptainer_run_tier1.slurm)
+***Nota bene: you need to check if you need to mount the folders(see apptainer_run_tier2k.slurm) or the folders are already mounted (see apptainer_run_tier1.slurm)
 
 # Interactive Mode
 

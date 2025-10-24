@@ -54,11 +54,11 @@ the `util/parallelism_paradigms.py`.
 
 ## Presentations on containers and HPC
 
-- presentation on [Docker and workflow management primer] (https://docs.google.com/presentation/d/1euJewnbw5fT2awcPtaiSgiDLyvMTZB8w/edit?slide=id.p1#slide=id.p1)
-- presentation on [HPC infrastructure](https://docs.google.com/presentation/d/1jR8FzRQyQRIMw1s-pEHv8qsU52RKztICLCHleTT2Xo8/edit?usp=sharing)
+- presentation on Docker and workflow management primer:  https://docs.google.com/presentation/d/1euJewnbw5fT2awcPtaiSgiDLyvMTZB8w/edit?slide=id.p1#slide=id.p1 
+- presentation on HPC infrastructure: https://docs.google.com/presentation/d/1jR8FzRQyQRIMw1s-pEHv8qsU52RKztICLCHleTT2Xo8/edit?usp=sharing
 
 ## Containers repositories
-- https://hub.docker.com/
-- https://seqera.io/containers/
-- https://git.embl.org/grp-cbbcs/container-recipes/-/tree/master
-- https://github.com/BIOP/BIOP-desktop/tree/main/docker
+- [dockerhub](https://hub.docker.com/)
+- [seqera containers](https://seqera.io/containers/)
+- [embl containers collection](https://git.embl.org/grp-cbbcs/container-recipes/-/tree/master)
+- [biop containers collection](https://github.com/BIOP/BIOP-desktop/tree/main/docker)
