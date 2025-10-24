@@ -1,0 +1,34 @@
+# Command to make it:
+# apptainer build --nv napari_dev-emp_ngc.sif napari_dev-emp_ngc.def
+Bootstrap: docker
+From: nvcr.io/nvidia/pytorch:23.04-py3
+
+%files
+    
+
+%runscript
+exec  /usr/local/bin/"$@"
+
+%environment
+    export PATH="/usr/local/bin:$PATH"
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+    export DEBIAN_FRONTEND=noninteractive
+
+%post
+   export DEBIAN_FRONTEND=noninteractive
+   apt-get update -y
+
+   apt install -y build-essential \
+         libglu1-mesa-dev \
+         dctrl-tools dkms libnvidia-cfg1-535 libnvidia-common-535 libnvidia-compute-535 libnvidia-decode-535 libnvidia-encode-535 libnvidia-extra-535 libnvidia-fbc1-535 libnvidia-gl-535 libvdpau1 libxnvctrl0 linux-headers-5.4.0-182 linux-headers-5.4.0-182-generic linux-headers-generic mesa-vdpau-drivers nvidia-dkms-535 nvidia-firmware-535-535.171.04 nvidia-kernel-common-535 nvidia-kernel-source-535 nvidia-prime nvidia-settings python3-xkit screen-resolution-extra sudo vdpau-driver-all xserver-xorg-video-nvidia-535 \
+         qtcreator \
+         libgl1-mesa-glx \
+         nautilus \
+         ocl-icd-dev \
+         xdg-utils \
+         python3-vigra \
+         libopencv-dev python3-opencv python3-keras pyqt5-dev
+
+
+   pip install --upgrade pip
+   pip install "napari[all]==0.4.19" opencv_python==4.8.0.74 opencv_python_headless==4.8.0.74 pydantic==1.10.15 PyQt5 empanada-napari bioformats_jar pandas seaborn natsort stackview scikit-image napari-czifile2 devbio-napari napari-aicsimageio==0.7.2 napari-ome-zarr blinker==1.4

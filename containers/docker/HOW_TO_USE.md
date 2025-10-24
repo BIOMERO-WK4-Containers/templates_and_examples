@@ -54,7 +54,13 @@ docker run --rm -it \
 # Inside the container, you can run the script manually:
 python example_tiff_processor.py
 ```
+# CLI
 
+- docker_metrics run as CLI
+```bash
+docker run     -v "$(pwd)/tiff_images:/app/image"     -v "$(pwd)/output/output:/app/output" -v "$(pwd)/bin:/app/bin" -v "$(pwd)/output_metrics:/app/output_metrics"  metrics python "/app/bin/metrics.py"  --image_path "/app/image/604_img.tif"     --label_path "/app/output/604_img_mask.tif" --output_dir "app/output_metrics"
+```
+- cellpose 4 run inside a nextflow pipeline
 # Troubleshooting
 
 If you encounter permission issues with Docker:

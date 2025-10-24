@@ -1,0 +1,29 @@
+FROM pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    python3-opencv \
+    && rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Install Python dependencies
+RUN pip install \
+    numpy \
+    numba \
+    wheel \
+    scipy \
+    opencv-python-headless \
+    natsort \
+    scikit-image \
+    matplotlib \
+    scikit-learn \
+    tifffile \
+    cellpose
+
+# Optional: Set the default command to bash
+CMD ["/bin/bash"]

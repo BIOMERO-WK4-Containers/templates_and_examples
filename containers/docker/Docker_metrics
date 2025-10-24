@@ -1,0 +1,22 @@
+FROM continuumio/miniconda3
+ 
+
+# Copy the files into the container 
+COPY metrics.yml /tmp/metrics.yml
+
+ 
+# Update package lists and install dependencies
+RUN apt-get update -y \
+ && apt-get install -y --no-install-recommends build-essential
+# Create conda environment
+RUN conda env create -f /tmp/metrics.yml
+ # Clean up
+RUN rm -rf /var/lib/apt/lists/* /tmp/metrics.yml
+ 
+# Set environment
+ENV CONDA_BIN_PATH=/opt/conda/bin
+ENV PATH=/opt/conda/envs/metrics/bin:/opt/conda/bin:$PATH
+
+# Equivalent to runscript in Apptainer
+ENTRYPOINT ["/bin/bash", "-lc", "source /opt/conda/etc/profile.d/conda.sh && exec \"$@\""]
+CMD ["bash"]
