@@ -17,6 +17,4 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/metrics.yml
 ENV CONDA_BIN_PATH=/opt/conda/bin
 ENV PATH=/opt/conda/envs/metrics/bin:/opt/conda/bin:$PATH
 
-# Equivalent to runscript in Apptainer
-ENTRYPOINT ["/bin/bash", "-lc", "source /opt/conda/etc/profile.d/conda.sh && exec \"$@\""]
 CMD ["bash"]
