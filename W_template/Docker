@@ -1,0 +1,29 @@
+FROM debian:latest
+
+# just some metadata...
+LABEL maintainer="vladimir.ulman@vsb.cz"
+LABEL description="A minimal Python3 numpy&scikit image processor"
+LABEL version="0.9"
+
+# let it work aside in a special folder, just in case...
+WORKDIR /app
+
+# fetch curl and make it ignore certificates :( (as they come not available with this base image)
+# (NB: ignoring is achieved by shadowing the original 'curl' with 'curl -k' variant... aliases were failing)
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+RUN cp /usr/bin/curl /usr/bin/curl_orig
+RUN echo '#!/usr/bin/bash\ncurl_orig -k $@' > /usr/bin/curl
+
+# get and install pixi (Python packages manager), and clean up
+RUN curl https://pixi.sh/install.sh | bash
+
+# crank up the Python env
+COPY pixi.toml .
+RUN pixi install
+
+# copy-in the BIOMERO stuff
+COPY wrapper.py
+
+# starts bash in a login mode (so that /etc/profile is read again)
+CMD ["pixi run python wrapper.py"]
+
