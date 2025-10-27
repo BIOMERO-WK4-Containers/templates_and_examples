@@ -1,0 +1,48 @@
+BootStrap: docker
+From: ubuntu:20.04
+
+%environment
+    FIJIPATH=/opt/fiji/Fiji.app
+    export PATH=$FIJIPATH:$PATH
+
+
+%runscript
+  ImageJ-linux64 -Dij1.plugin.dirs=/opt/fiji/Fiji.app/jars:/opt/fiji/Fiji.app/plugins:$HOME/.plugins --memory 108G
+
+
+%post
+   apt -y update
+
+  DEBIAN_FRONTEND=noninteractive apt install -y unzip wget build-essential git software-properties-common
+  DEBIAN_FRONTEND=noninteractive apt install -y libxi6 libxrender1 libxtst6 libfreetype6 ttf-dejavu nvidia-opencl-dev ocl-icd-opencl-dev
+
+   cd /tmp
+   wget https://downloads.imagej.net/fiji/latest/fiji-linux64.zip
+
+   unzip -d /opt/fiji/ fiji-linux64.zip
+
+   /opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site MoBIE https://sites.imagej.net/MoBIE/
+   /opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site BioVoxxel http://sites.imagej.net/BioVoxxel/
+   /opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site TrackMate-MorphoLibJ https://sites.imagej.net/TrackMate-MorphoLibJ
+   /opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site BigStitcher https://sites.imagej.net/BigStitcher/
+
+/opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site IJPB-plugins http://sites.imagej.net/IJPB-plugins/
+/opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site clijx-assistant-extensions https://sites.imagej.net/clijx-assistant-extensions/
+/opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site clijx-assistant https://sites.imagej.net/clijx-assistant/
+/opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site CLIJ2 https://sites.imagej.net/clij2/
+/opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site CLIJ https://sites.imagej.net/clij/
+
+/opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site Bio-Formats https://sites.imagej.net/Bio-Formats/
+
+/opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site BioVoxxel-3D-Box https://sites.imagej.net/bv3dbox/
+/opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site DiversePathsJ https://sites.imagej.net/Vuhlmann/
+/opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site ElastixWrapper https://sites.imagej.net/ElastixWrapper/
+/opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site MultiStackReg https://sites.imagej.net/MultiStackReg/
+/opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site StarDist https://sites.imagej.net/StarDist/
+
+/opt/fiji/Fiji.app/ImageJ-linux64 --update add-update-site BigDataProcessor https://sites.imagej.net/BigDataProcessor/
+
+   /opt/fiji/Fiji.app/ImageJ-linux64 --ij2 --headless --update update
+
+   /opt/fiji/Fiji.app/ImageJ-linux64 -Dij1.plugin.dirs=/opt/fiji/Fiji.app/jars:/opt/fiji/Fiji.app/plugins:$HOME/.plugins
+
