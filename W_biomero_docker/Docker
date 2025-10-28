@@ -27,8 +27,8 @@ COPY W_biomero_docker/wrapper.py .
 COPY W_prototypes/prototypes.py .
 COPY W_example/image_processing.py .
 
-# CMD ["/root/.pixi/bin/pixi","run","python","wrapper.py"]
-CMD ["bash"]
+CMD ["/root/.pixi/bin/pixi","run","python","wrapper.py"]
+# CMD ["bash"]
 
 # CMD starts bash in a login mode (so that /etc/profile is read again, but pixi is not "registered there"
 # (BTW: RUN doesn't start bash in a login mode....)
