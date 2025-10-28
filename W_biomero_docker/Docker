@@ -1,0 +1,35 @@
+FROM debian:latest
+SHELL ["/bin/bash","-c"]
+
+# just some metadata... could be something like "BIOMERO developers"
+LABEL maintainer="vladimir.ulman@vsb.cz"
+LABEL description="A minimal Python3 numpy&scikit image processor"
+LABEL version="0.9"
+
+# let it work aside in a special folder, just in case...
+WORKDIR /app
+
+# fetch curl and make it ignore certificates :( (as this base image distro comes without them installed)
+# (NB: ignoring is achieved by shadowing the original 'curl' with 'curl -k' variant... aliases were failing)
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+RUN cp /usr/bin/curl /usr/bin/curl_orig
+RUN echo -e '#!/usr/bin/bash\ncurl_orig -k $@' > /usr/bin/curl
+
+# get and install pixi (Python packages manager), and clean up
+RUN curl https://pixi.sh/install.sh | bash
+
+# crank up the Python env
+COPY W_example/pixi.toml .
+RUN ["/root/.pixi/bin/pixi","install"]
+
+# copy-in the BIOMERO stuff
+COPY W_biomero_docker/wrapper.py .
+COPY W_prototypes/prototypes.py .
+COPY W_example/image_processing.py .
+
+CMD ["/root/.pixi/bin/pixi","run","python","wrapper.py"]
+# CMD ["bash"]
+
+# CMD starts bash in a login mode (so that /etc/profile is read again, but pixi is not "registered there"
+# (BTW: RUN doesn't start bash in a login mode....)
+
