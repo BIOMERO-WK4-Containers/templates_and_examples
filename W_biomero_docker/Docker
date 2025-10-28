@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM debian:latest
 SHELL ["/bin/bash","-c"]
 
 # just some metadata... could be something like "BIOMERO developers"
@@ -19,12 +19,13 @@ RUN echo -e '#!/usr/bin/bash\ncurl_orig -k $@' > /usr/bin/curl
 RUN curl https://pixi.sh/install.sh | bash
 
 # crank up the Python env
-COPY pixi.toml .
+COPY W_example/pixi.toml .
 RUN ["/root/.pixi/bin/pixi","install"]
 
 # copy-in the BIOMERO stuff
-COPY wrapper.py .
-COPY my_image_processing.py .
+COPY W_biomero_docker/wrapper.py .
+COPY W_prototypes/prototypes.py .
+COPY W_example/image_processing.py .
 
 CMD ["/root/.pixi/bin/pixi","run","python","wrapper.py"]
 # CMD ["bash"]
