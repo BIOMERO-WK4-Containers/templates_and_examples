@@ -20,11 +20,13 @@ RUN curl https://pixi.sh/install.sh | bash
 
 # crank up the Python env
 COPY pixi.toml .
-RUN pixi install
+RUN ["/root/.pixi/bin/pixi","install"]
 
 # copy-in the BIOMERO stuff
-COPY wrapper.py
+COPY wrapper.py .
+COPY my_image_processing.py .
 
 # starts bash in a login mode (so that /etc/profile is read again)
-CMD ["pixi run python wrapper.py"]
+CMD ["/root/.pixi/bin/pixi","run","python","wrapper.py"]
+# CMD ["bash"]
 
