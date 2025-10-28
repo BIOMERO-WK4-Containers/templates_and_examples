@@ -1,7 +1,7 @@
-FROM debian:latest
+FROM ubuntu:latest
 SHELL ["/bin/bash","-c"]
 
-# just some metadata...
+# just some metadata... could be something like "BIOMERO developers"
 LABEL maintainer="vladimir.ulman@vsb.cz"
 LABEL description="A minimal Python3 numpy&scikit image processor"
 LABEL version="0.9"
@@ -26,7 +26,9 @@ RUN ["/root/.pixi/bin/pixi","install"]
 COPY wrapper.py .
 COPY my_image_processing.py .
 
-# starts bash in a login mode (so that /etc/profile is read again)
 CMD ["/root/.pixi/bin/pixi","run","python","wrapper.py"]
 # CMD ["bash"]
+
+# CMD starts bash in a login mode (so that /etc/profile is read again, but pixi is not "registered there"
+# (BTW: RUN doesn't start bash in a login mode....)
 
