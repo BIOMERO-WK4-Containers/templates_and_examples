@@ -1,4 +1,5 @@
 FROM debian:latest
+SHELL ["/bin/bash","-c"]
 
 # just some metadata...
 LABEL maintainer="vladimir.ulman@vsb.cz"
@@ -8,11 +9,11 @@ LABEL version="0.9"
 # let it work aside in a special folder, just in case...
 WORKDIR /app
 
-# fetch curl and make it ignore certificates :( (as they come not available with this base image)
+# fetch curl and make it ignore certificates :( (as this base image distro comes without them installed)
 # (NB: ignoring is achieved by shadowing the original 'curl' with 'curl -k' variant... aliases were failing)
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 RUN cp /usr/bin/curl /usr/bin/curl_orig
-RUN echo '#!/usr/bin/bash\ncurl_orig -k $@' > /usr/bin/curl
+RUN echo -e '#!/usr/bin/bash\ncurl_orig -k $@' > /usr/bin/curl
 
 # get and install pixi (Python packages manager), and clean up
 RUN curl https://pixi.sh/install.sh | bash
