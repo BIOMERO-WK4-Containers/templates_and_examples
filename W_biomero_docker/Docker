@@ -3,7 +3,7 @@ SHELL ["/bin/bash","-c"]
 
 # just some metadata... could be something like "BIOMERO developers"
 LABEL maintainer="vladimir.ulman@vsb.cz"
-LABEL description="A minimal Python3 numpy&scikit image processor"
+LABEL description="A minimal Python-based image processor"
 LABEL version="0.9"
 
 ARG IMGPROC_FOLDER="W_example"
@@ -26,8 +26,7 @@ RUN ["/root/.pixi/bin/pixi","install"]
 
 # copy-in the BIOMERO stuff
 COPY W_biomero_docker/wrapper.py .
-COPY W_prototypes/prototypes.py .
-COPY ${IMGPROC_FOLDER}/image_processing.py .
+COPY ${IMGPROC_FOLDER}/*.py .
 
 CMD ["/root/.pixi/bin/pixi","run","python","wrapper.py"]
 # CMD ["bash"]

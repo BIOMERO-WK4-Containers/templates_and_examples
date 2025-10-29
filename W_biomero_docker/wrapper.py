@@ -3,16 +3,25 @@ import numpy as np
 def biomero_entry_point(args):
 
     # ------------ CHANGE HERE ------------
-    from image_processing import MyAwesomeImgProcessing
-    imgproc = MyAwesomeImgProcessing(2,3)
+    import image_processing as IP
+    IP.initiate_resources(42, 24)
     # ------------ CHANGE HERE ------------
 
-    # loop here -- simulates taking and reading tiffs, should be also saving outputs
-    img = np.zeros((30,20))
-    imgproc.execute(img)
-    imgproc.execute(img)
+    # LOOP HERE, the simulated loop should do:
+    # - organize itself on files discovered in the input folder,
+    #   and establish tuples (e.g. upon a common number-based prefix)
+    # - for each tuple:
+    #   - submit the tuple to the IP.process(...tuple/list...),
+    #     and collect result(s)
+    #   - save the result(s)
+    for i in range(3):
+        # fake input image, would be taken from OMERO normally
+        group_input_number_i = [ np.zeros((30+i,20+2*i)) ]
 
-    imgproc.release_resources()
+        result_group_number_i = IP.process(group_input_number_i)
+        # submit 'result_group_number_i' back to OMERO
+
+    IP.release_resources()
 
 
 if __name__ == '__main__':
