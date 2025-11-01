@@ -36,7 +36,13 @@ process process_list_of_files {
 
     script:
     """
+    echo -n "processing ${in_files_list} on "
+    date
+    hostname
+    sleep 2
     ${params.processor} ${in_files_list}
+    echo -n "finished   ${in_files_list} on "
+    date
     """
 }
 
