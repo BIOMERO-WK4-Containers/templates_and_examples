@@ -1,0 +1,2 @@
+process.executor = 'local'
+params.max_forks = 2
