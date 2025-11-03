@@ -56,6 +56,6 @@ workflow {
     file_list = channel.fromList( files( "${params.input_folder}/*.tif" ).sort() )
     files_groups = file_list.buffer( size:params.group_size, remainder:true )
 
-    //process_list_of_files( files_groups )
-    echo_somewhere( files_groups, '/dev/pts/13' )
+    process_list_of_files( files_groups )
+    //echo_somewhere( files_groups, '/dev/pts/13' )
 }
