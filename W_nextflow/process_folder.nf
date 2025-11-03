@@ -11,7 +11,6 @@ params.group_size = 1
 // - in local config: not more than that processes are created
 // - in SLURM config: not more than that jobs are executed and waiting
 params.max_forks = 5
-params.cluster_options = ''
 
 
 process process_list_of_files {
@@ -19,7 +18,7 @@ process process_list_of_files {
 
     // this statement is here only to associate SLURM settings with this process (task)
     // (has no effect in the local config)
-    clusterOptions params.cluster_options
+    clusterOptions params.get('cluster_options', '')
 
     // estimated time needed for this process (task) to finish
     // (has no effect in the local config)
