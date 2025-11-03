@@ -1,0 +1,14 @@
+process.executor = 'slurm'
+params.cluster_options = '-A FTA-25-62 -p qcpu'
+
+// logs are to be found in 'work' (sub)folder(s) of Nextflow, look for '.command.*' files
+// params.cluster_options = '-A FTA-25-62 -p qcpu  -o /home/xulman/nextflow/slurm_logs/job-%x-%A_%a-%N.out.txt -e /home/xulman/nextflow/slurm_logs/job-%x-%A_%a-%N.err.txt'
+
+// REMOVE DOWN
+// When Nextflow figures out a job/task, this (SLURM) executor will create a SLURM job
+// around it, so it would be one job/task mapped to one SLURM job, to one cluster's node.
+// If the jobs/tasks are relatively smaller in their compute demands and more of them
+// could be hosted on one cluster's node simultaneously, this parameter gives the
+// maximum number of them per one cluster's node. Set it to 1 to obtain the "natural"
+// Nextflow behaviour (one task/job per one SLURM job/node).
+// REMOVE UP
