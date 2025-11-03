@@ -11,11 +11,10 @@ params.group_size = 1
 
 params.local_processor_command = "nextflow run /home/ulman/data/Kobe-Hackathon/seg_and_tra_pipeline/W_nextflow/folder_processor.nf"
 params.local_processor_config_param = "-c /home/ulman/data/Kobe-Hackathon/seg_and_tra_pipeline/W_nextflow/config_node.nextflow"
-params.max_pending_jobs = 3
 
 
 process create_lists_of_files {
-    maxForks params.max_pending_jobs
+    maxForks params.get('max_pending_jobs', 10)
 
     // this statement is here only to associate SLURM settings with this process (task)
     // (would have no effect in the local config)
