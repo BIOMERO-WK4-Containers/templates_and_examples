@@ -7,6 +7,8 @@ params.group_size = 1
 // NB: Chunks the input folder files into groups, each of the size above,
 //     one group is one tupple'd input -> if three files are required for
 //     the processing, set group_size = 3
+params.processor_needs_time = 1m
+params.processor_needs_cpus = 2
 //------
 
 params.local_processor_command = "nextflow run /home/ulman/data/Kobe-Hackathon/seg_and_tra_pipeline/W_nextflow/folder_processor.nf"
@@ -22,8 +24,8 @@ process create_lists_of_files {
 
     // estimated time needed for this process (task) to finish
     // (would have no effect in the local config)
-    time 115.s //TODO: create parameters for these
-    cpus 2
+    time params.processor_needs_time
+    cpus params.processor_needs_cpus
 
     input:
     path in_files_list
