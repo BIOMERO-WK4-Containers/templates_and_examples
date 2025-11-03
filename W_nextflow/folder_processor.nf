@@ -52,7 +52,7 @@ workflow {
     println("LOCAL IMMEDIATE WORKING...")
     println("CONSIDERING "+params.group_size+"-TUPLES...")
 
-    file_list = channel.fromPath( "${params.input_folder}/*.tif" )
+    file_list = channel.fromList( files( "${params.input_folder}/*.tif" ).sort() )
     files_groups = file_list.buffer( size:params.group_size, remainder:true )
 
     //process_list_of_files( files_groups )

@@ -46,9 +46,13 @@ workflow {
     println("SUBMITTING JOBS...")
     println("CONSIDERING "+params.group_size+"-TUPLES...")
 
-    file_list = channel.fromPath( "${params.input_folder}/*.tif" )
-    cumulation_factor = round_up( file_list.size() / params.max_pending_jobs )
-    cumulation_factor = 2 //TODO: remove after I figure out how to read the size of the input
+    file_list0 = files( "${params.input_folder}/*.tif" ).sort()
+
+    max_jobs = params.get('max_pending_jobs', 10)
+    cumulation_factor = (int)Math.ceil( file_list0.size() / (params.group_size*max_jobs) )
+    println("CONSIDERING MAX "+cumulation_factor+" TASKS ON A NODE")
+
+    file_list = channel.fromList( file_list0 )
     files_groups = file_list.buffer( size:params.group_size*cumulation_factor, remainder:true )
 
     create_lists_of_files( files_groups )
