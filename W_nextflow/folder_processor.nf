@@ -1,11 +1,13 @@
-params.processor = "/home/ulman/data/Kobe-Hackathon/seg_and_tra_pipeline/W_nextflow/processor.sh"
+//shortcuts for calling this directly:
+//------
 params.input_folder = "/home/ulman/devel/NextFlow/inputs"
 params.output_folder = "/home/ulman/devel/NextFlow/outputs"
-
+params.processor = "/home/ulman/data/Kobe-Hackathon/seg_and_tra_pipeline/W_nextflow/processor.sh"
 params.group_size = 1
 // NB: Chunks the input folder files into groups, each of the size above,
 //     one group is one tupple'd input -> if three files are required for
 //     the processing, set group_size = 3
+//------
 
 // how many parallel instances are permitted at one moment:
 // - in local config: not more than that processes are created
@@ -47,6 +49,9 @@ process echo_somewhere {
 
 
 workflow {
+    println("LOCAL IMMEDIATE WORKING...")
+    println("CONSIDERING "+params.group_size+"-TUPLES...")
+
     file_list = channel.fromPath( "${params.input_folder}/*.tif" )
     files_groups = file_list.buffer( size:params.group_size, remainder:true )
 

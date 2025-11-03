@@ -1,59 +1,56 @@
-params.local_jobs_executor = "nextflow run -c config_node.nextflow "
-params.max_pending_jobs = 3
-
+//the following will be passed to the local processor
+//------
 params.input_folder = "/home/ulman/devel/NextFlow/inputs"
-
+params.output_folder = "/home/ulman/devel/NextFlow/outputs"
+params.processor = "/home/ulman/data/Kobe-Hackathon/seg_and_tra_pipeline/W_nextflow/processor.sh"
 params.group_size = 1
 // NB: Chunks the input folder files into groups, each of the size above,
 //     one group is one tupple'd input -> if three files are required for
 //     the processing, set group_size = 3
+//------
+
+params.local_processor_command = "nextflow run /home/ulman/data/Kobe-Hackathon/seg_and_tra_pipeline/W_nextflow/folder_processor.nf"
+params.local_processor_config_param = "-c /home/ulman/data/Kobe-Hackathon/seg_and_tra_pipeline/W_nextflow/config_node.nextflow"
+params.max_pending_jobs = 3
 
 
 process create_lists_of_files {
+    maxForks params.max_pending_jobs
+
     // this statement is here only to associate SLURM settings with this process (task)
-    // (has no effect in the local config)
+    // (would have no effect in the local config)
     clusterOptions params.get('cluster_options', '')
 
     // estimated time needed for this process (task) to finish
-    // (has no effect in the local config)
-    time 115.s
-    cpus 1
+    // (would have no effect in the local config)
+    time 115.s //TODO: create parameters for these
+    cpus 2
 
     input:
     path in_files_list
 
     script:
     """
-    echo -n "submitting ${in_files_list} on " >> /dev/pts/13
+    echo -n "JOB submitting ${in_files_list} in folder " >> /dev/pts/13
+    pwd >> /dev/pts/13
+    echo \
+    ${params.local_processor_command} ${params.local_processor_config_param} \
+         --input_folder . \
+         --output_folder ${params.output_folder} \
+         --processor ${params.processor} \
+         --group_size ${params.group_size} >> /dev/pts/13
     """
 }
 
 
 workflow {
-    //file_list = channel.fromPath( "${params.input_folder}/*.tif" )
-    //files_groups = file_list.buffer( size:params.group_size, remainder:true )
-
+    println("SUBMITTING JOBS...")
     println("CONSIDERING "+params.group_size+"-TUPLES...")
 
-    if (params.get('max_pending_jobs',-9897) == -9897) { //includes() would be better
-        println("LOCAL IMMEDIATE WORKING...")
+    file_list = channel.fromPath( "${params.input_folder}/*.tif" )
+    cumulation_factor = round_up( file_list.size() / params.max_pending_jobs )
+    cumulation_factor = 2 //TODO: remove after I figure out how to read the size of the input
+    files_groups = file_list.buffer( size:params.group_size*cumulation_factor, remainder:true )
 
-        files_groups = channel.fromPath( "${params.input_folder}/*.tif" )
-            .buffer( size:params.group_size, remainder:true )
-            //.view( gr -> println(gr) )
-
-        //process_list_of_files( files_groups )
-        echo_somewhere( files_groups )
-    } else {
-        println("SUBMITTING JOBS...")
-
-        groups_size = params.group_size * params.get('max_forks',1)
-        println("groups_size = "+groups_size)
-
-        files_groups = channel.fromPath( "${params.input_folder}/*.tif" )
-            .buffer( size:groups_size, remainder:true )
-            //.view( gr -> println(gr) )
-
-        create_lists_of_files( files_groups )
-    }
+    create_lists_of_files( files_groups )
 }
