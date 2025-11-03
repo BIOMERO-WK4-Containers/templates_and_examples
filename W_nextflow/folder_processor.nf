@@ -40,10 +40,11 @@ process process_list_of_files {
 process echo_somewhere {
     input:
     path in_files_list
+    path output_tty
 
     script:
     """
-    echo "$in_files_list"
+    echo "$in_files_list" >> ${output_tty}
     """
 }
 
@@ -56,5 +57,5 @@ workflow {
     files_groups = file_list.buffer( size:params.group_size, remainder:true )
 
     //process_list_of_files( files_groups )
-    echo_somewhere( files_groups )
+    echo_somewhere( files_groups, '/dev/pts/13' )
 }
