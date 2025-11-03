@@ -30,14 +30,13 @@ process create_lists_of_files {
 
     script:
     """
-    echo -n "JOB submitting ${in_files_list} in folder " >> /dev/pts/13
-    pwd >> /dev/pts/13
-    echo \
+    echo -n "JOB submitting ${in_files_list} in folder "
+    pwd
     ${params.local_processor_command} ${params.local_processor_config_param} \
          --input_folder . \
          --output_folder ${params.output_folder} \
          --processor ${params.processor} \
-         --group_size ${params.group_size} >> /dev/pts/13
+         --group_size ${params.group_size}
     """
 }
 

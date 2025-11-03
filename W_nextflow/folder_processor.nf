@@ -26,13 +26,13 @@ process process_list_of_files {
 
     script:
     """
-    echo -n "processing ${in_files_list} on " >> /dev/pts/13
-    date >> /dev/pts/13
-    hostname >> /dev/pts/13
+    echo -n "processing ${in_files_list} on "
+    date
+    hostname
     sleep 2
     ${params.processor} ${in_files_list}
-    echo -n "finished   ${in_files_list} on " >> /dev/pts/13
-    date >> /dev/pts/13
+    echo -n "finished   ${in_files_list} on "
+    date
     """
 }
 
@@ -43,7 +43,7 @@ process echo_somewhere {
 
     script:
     """
-    echo "$in_files_list" >> /dev/pts/13
+    echo "$in_files_list"
     """
 }
 
